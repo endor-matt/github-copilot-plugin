@@ -1,69 +1,82 @@
-# AURI by Endor Labs AgentHQ Plugin
+# Endor Labs Agent Kit — GitHub AgentHQ Plugins (Developer Edition)
 
-AURI by Endor Labs security and dependency intelligence for GitHub Copilot and
-AgentHQ.
+GitHub Copilot / AgentHQ plugin bundle for the Developer Edition of the
+[Endor Labs Agent Kit](https://github.com/endorlabs/endor-labs-agent-kit).
+Each subdirectory is a self-contained AgentHQ plugin built from one Agent Kit
+recipe and targets `github-copilot`.
 
-This repository is a single AgentHQ plugin package. It contains one root
-`plugin.json`, one entrypoint agent in `agents/`, and workflow skills in
-`skills/`.
+These plugins are **MCP-only**: they call the Endor MCP server (`endorctl
+ai-tools mcp-server`) and do not grant shell execution. Every agent is
+read-only — none of them edit files, open pull requests, dismiss findings,
+create policies, run scans, or otherwise mutate Endor Labs state.
 
-The plugin is read-only in v1. It answers Endor Labs security questions with
-Endor MCP tools and AgentHQ-native MCP OIDC. It does not use GitHub Actions OIDC
-or long-lived Endor credentials in GitHub.
+## Agents
 
-## Agent
+| Plugin | Recipe | Use it when… |
+|---|---|---|
+| [`dependency-decision-helper/developer-edition`](dependency-decision-helper/developer-edition) | `dependency-decision-helper` v1.0.0 | The user asks whether to add, upgrade to, or keep a specific package version (e.g. *"Is lodash 4.17.20 safe?"*). Returns a verdict (`SAFE` / `SAFE_WITH_CONDITIONS` / `NOT_RECOMMENDED` / `BLOCKED`) with evidence, conditions, alternatives, and any data gaps. |
+| [`package-risk-summary/developer-edition`](package-risk-summary/developer-edition) | `package-risk-summary` v1.0.0 | The user wants a concise risk profile for a specific package version without a yes/no decision (e.g. *"Summarize npm lodash 4.17.20 risk"*). Returns a risk posture (`LOW` / `MODERATE` / `HIGH` / `CRITICAL` / `UNKNOWN`) with vulnerabilities, malware/typosquat signals, scores, license notes, and recommended next checks. |
+| [`upgrade-impact-analysis/developer-edition`](upgrade-impact-analysis/developer-edition) | `upgrade-impact-analysis` v1.0.0 | The user asks about safe upgrade paths, upgrade risk, or findings fixed/introduced when moving between two specific versions. Returns an upgrade recommendation (`UPGRADE_NOW` / `UPGRADE_WITH_CAUTION` / `DEFER` / `INSUFFICIENT_DATA`) and a risk delta. Developer Edition is a lighter MCP-only explicit package-version comparator. |
+| [`vulnerability-explainer/developer-edition`](vulnerability-explainer/developer-edition) | `vulnerability-explainer` v1.0.0 | The user asks what a specific vulnerability means and how to reason about it (e.g. *"Explain CVE-2021-44228"*). Returns an action (`CRITICAL_ACTION_REQUIRED` / `ACTION_RECOMMENDED` / `MONITOR` / `INSUFFICIENT_DATA`) with severity, exploitability, and remediation guidance. |
 
-- `AURI by Endor Labs`: the AgentHQ entrypoint agent at
-  `agents/main.agent.md`.
+Each agent is `user-invocable` and has `disable-model-invocation: true`, so it
+will only run when a user explicitly selects it in AgentHQ.
 
-## Skills
+## Install
 
-- `tenant-findings`: summarize tenant findings and reachable findings.
-- `vulnerability-explainer`: explain a CVE, GHSA, or Endor vulnerability.
-- `package-risk-summary`: summarize a package version's risk profile.
-- `dependency-decision-helper`: decide whether to add, keep, or upgrade a
-  package version.
-- `upgrade-impact-analysis`: analyze upgrade risk and impact when Endor evidence
-  is available.
-
-## Authentication
-
-The plugin exposes one local MCP server named `endor-api-tools`. That server is
-a small Node service which calls the Endor REST API directly for read-only
-package, vulnerability, project, and finding tools. It does not use Endor CLI,
-`endorctl`, `npx`, shell commands, or GitHub Actions OIDC.
-
-AgentHQ exchanges a short-lived OIDC JWT with an Endor OIDC broker and injects
-the returned Endor identity token as `GITHUB_COPILOT_OIDC_MCP_TOKEN`. The plugin
-maps that value to `ENDOR_TOKEN`. The MCP server uses that token and does not
-store Endor credentials in GitHub.
-
-Required AgentHQ variables:
-
-- `COPILOT_MCP_ENDOR_NAMESPACE`
-
-Optional:
-
-- `COPILOT_MCP_ENDOR_API`, defaulting to `https://api.endorlabs.com`
-
-The broker URL is currently embedded literally in `agents/main.agent.md` because
-AgentHQ validates OIDC endpoint URLs before environment-variable interpolation.
-Update `oidc.endpoints.exchange`, `oidc.endpoints.revoke`, and
-`oidc.endpoints.failure` whenever the broker URL changes.
-
-See `AGENTHQ_OIDC_AUTH.md`.
-
-## Install Locally
-
-From this repository root:
+Each plugin installs independently. From the plugin directory:
 
 ```bash
 copilot plugin install .
 ```
 
-## AgentHQ Setup
+For example:
 
-Point the Agentic App at this repository root.
+```bash
+cd dependency-decision-helper/developer-edition
+copilot plugin install .
+```
 
-Deploy and configure the broker service from the sibling
-`endor-agenthq-oidc-broker` repository, then set the AgentHQ variables above.
+The installed plugin names are:
+
+- `endor-labs-dependency-decision-helper-developer`
+- `endor-labs-package-risk-summary-developer`
+- `endor-labs-upgrade-impact-analysis-developer`
+- `endor-labs-vulnerability-explainer-developer`
+
+Uninstall with `copilot plugin uninstall <name>`.
+
+## Plugin layout
+
+Each plugin follows the same shape:
+
+```
+<recipe>/developer-edition/
+├── plugin.json                       # AgentHQ plugin manifest
+├── README.md                         # Per-plugin install + scope notes
+└── agents/
+    └── <recipe>.agent.md             # Agent definition with embedded MCP config
+```
+
+The agent file embeds the Endor MCP server configuration and enables only the
+MCP tools that recipe needs. Across the four agents, the enabled tools are a
+subset of:
+
+- `check_dependency_for_risks`
+- `check_dependency_for_vulnerabilities`
+- `get_endor_vulnerability`
+
+## Design notes
+
+- **Developer Edition only.** These are the lighter, MCP-only variants of the
+  Agent Kit recipes. They do not run shell commands or call `endorctl` directly.
+- **Evidence-first.** Each agent maintains a `data_gaps` list and never
+  fabricates missing scores, license data, vulnerability enrichment, or
+  exploitability signals. When data is missing, the agent says so and points
+  the user at <https://app.endorlabs.com> for the full assessment.
+- **Structured output.** Every agent returns concise prose alongside a JSON
+  block with a recipe-specific schema (verdict, risk posture, upgrade
+  recommendation, or action) so its output is easy to consume programmatically.
+- **AgentHQ wrapping.** The plugins are the agent surface; AgentHQ app
+  wrapping and any OIDC token exchange endpoints are configured outside these
+  packages.
