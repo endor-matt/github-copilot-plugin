@@ -5,7 +5,7 @@ This repository contains a GitHub AgentHQ/Copilot plugin that packages a single 
 The agent starts the Endor Labs MCP server with:
 
 ```sh
-npx -y endorctl ai-tools mcp-server
+npx -y endorctl ai-tools mcp-server --log-level debug
 ```
 
 Authentication is intentionally not configured in this first version. The plugin is scoped to Endor Labs Developer Edition (free) tools and excludes Enterprise-only `security_review`.
@@ -31,9 +31,22 @@ The `endor-cli-tools` MCP server enables:
 - `check_dependency_for_risks`
 - `get_endor_vulnerability`
 - `get_resource`
+- `get`
 - `scan`
 
 The Enterprise-only `security_review` tool is deliberately not enabled.
+
+## Copilot Cloud Agent MCP Configuration
+
+If your AgentHQ/Copilot environment asks for an MCP JSON value, use the same server name as the agent frontmatter:
+
+```json
+{"mcpServers":{"endor-cli-tools":{"type":"local","command":"npx","args":["-y","endorctl","ai-tools","mcp-server","--log-level","debug"],"tools":["check_dependency_for_vulnerabilities","check_dependency_for_risks","get_endor_vulnerability","get_resource","get","scan"]}}}
+```
+
+The `endor-cli-tools` name matters because the agent enables MCP tools with `endor-cli-tools/*`.
+
+If your UI specifically exposes an Agents variable named `GITHUB_COPILOT_MCP_JSON`, set its value to the JSON above.
 
 ## Local Testing
 
