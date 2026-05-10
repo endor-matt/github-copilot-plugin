@@ -25,7 +25,7 @@ mcp-servers:
 metadata:
   endor_agent_id: tenant-findings
   endor_agent_version: 1.0.0
-  endor_edition: enterprise-edition
+  endor_edition: agenthq-root
   endor_recipe_schema_version: '1'
 ---
 

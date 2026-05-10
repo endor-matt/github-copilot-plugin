@@ -29,7 +29,7 @@ mcp-servers:
 metadata:
   endor_agent_id: upgrade-impact-analysis
   endor_agent_version: 1.0.0
-  endor_edition: enterprise-edition
+  endor_edition: agenthq-root
   endor_recipe_schema_version: '1'
 ---
 
