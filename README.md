@@ -38,15 +38,21 @@ The Enterprise-only `security_review` tool is deliberately not enabled.
 
 ## Copilot Cloud Agent MCP Configuration
 
-If your AgentHQ/Copilot environment asks for an MCP JSON value, use the same server name as the agent frontmatter:
+The agent frontmatter already includes the MCP server configuration. If your GitHub Copilot Cloud agent settings also ask for an MCP JSON configuration, paste the JSON below into the **MCP configuration** field under repository settings:
+
+```text
+Settings -> Copilot -> Cloud agent -> MCP configuration
+```
+
+Do not add this JSON as an Agents variable or secret. GitHub does not allow variables or secrets with the `GITHUB_` prefix, and `GITHUB_COPILOT_MCP_JSON` is an internal implementation detail, not a variable you should create manually.
+
+Use the same server name as the agent frontmatter:
 
 ```json
 {"mcpServers":{"endor-cli-tools":{"type":"local","command":"npx","args":["-y","endorctl","ai-tools","mcp-server","--log-level","debug"],"tools":["check_dependency_for_vulnerabilities","check_dependency_for_risks","get_endor_vulnerability","get_resource","get","scan"]}}}
 ```
 
 The `endor-cli-tools` name matters because the agent enables MCP tools with `endor-cli-tools/*`.
-
-If your UI specifically exposes an Agents variable named `GITHUB_COPILOT_MCP_JSON`, set its value to the JSON above.
 
 ## Local Testing
 
