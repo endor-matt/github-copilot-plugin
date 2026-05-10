@@ -1,0 +1,21 @@
+{
+  "name": "endor-labs-developer",
+  "description": "GitHub AgentHQ plugin for Endor Labs Developer Edition security analysis through the Endor Labs MCP server.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Endor Labs"
+  },
+  "homepage": "https://docs.endorlabs.com/setup-deployment/mcp/codex",
+  "repository": "https://github.com/endor-matt/github-copilot-plugin",
+  "license": "MIT",
+  "keywords": [
+    "endor-labs",
+    "security",
+    "mcp",
+    "sca",
+    "secrets",
+    "github-agenthq"
+  ],
+  "category": "security",
+  "agents": "agents/"
+}
