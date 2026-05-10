@@ -1,4 +1,8 @@
-# Endor GitHub Keyless Auth For Copilot Agents
+# Legacy Endor GitHub Keyless Auth For Copilot Agents
+
+This document describes the earlier GitHub Actions OIDC approach used by the
+legacy package layout. It is retained for reference, but it is not the native
+AgentHQ MCP OIDC path described in the May 2026 AgentHQ docs.
 
 GitHub Copilot cloud agent and AgentHQ run in a GitHub Actions-backed
 environment. Endor Labs can authenticate that workload with GitHub Actions OIDC
@@ -53,10 +57,10 @@ jobs:
           echo "ENDOR_API=${{ vars.COPILOT_MCP_ENDOR_API || 'https://api.endorlabs.com' }}" >> "$GITHUB_ENV"
 ```
 
-## Plugin MCP Configuration
+## Legacy Plugin MCP Configuration
 
-Enterprise GitHub Copilot plugin agents in this kit pass the same values into
-their local Endor MCP server:
+The legacy enterprise package agents passed the same values into their local
+Endor MCP server:
 
 ```yaml
 env:
@@ -65,10 +69,9 @@ env:
   ENDOR_API: ${COPILOT_MCP_ENDOR_API:-https://api.endorlabs.com}
 ```
 
-This path intentionally uses Endor's GitHub Actions OIDC support rather than
-long-lived Endor API keys. It does not add an AgentHQ MCP `oidc` block, because
-`endorctl` performs the GitHub Actions OIDC exchange with Endor directly when
-`ENDOR_GITHUB_ACTION_TOKEN_ENABLE=true`.
+This path intentionally used Endor's GitHub Actions OIDC support rather than
+long-lived Endor API keys. The current AgentHQ target should move to an MCP
+`oidc` block once an Endor-compatible token exchange endpoint is available.
 
 ## Verification
 

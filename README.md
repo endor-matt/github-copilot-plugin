@@ -1,70 +1,63 @@
-# Endor Labs GitHub Copilot Plugin Kit
+# Endor Labs Security Intelligence AgentHQ Plugin
 
-A collection of GitHub Copilot and AgentHQ plugins that bring Endor Labs
-security intelligence — reachable vulnerabilities, dependency risk, upgrade
-impact, and tenant findings — directly into Copilot agent sessions.
+This repository is now shaped as a single GitHub Copilot and AgentHQ plugin.
+The Agentic App should point at this repository root and load the root
+`plugin.json`.
 
-Each plugin packages a custom Copilot agent with an embedded Endor MCP server
-configuration, so the agent can call Endor Labs read-only lookups without
-leaving the editor or pull request.
+The plugin bundles Endor Labs read-only security workflows for dependency
+decisions, package risk summaries, upgrade impact analysis, vulnerability
+explanations, and tenant findings.
 
-## Plugins
+## Agentic App Entry Point
 
-Every plugin ships in two editions:
+Use the root plugin:
 
-- **Developer Edition** — runs locally with an existing `endorctl` API key
-  configuration. No tenant onboarding required.
-- **Enterprise Edition** — runs in GitHub Copilot cloud agent or AgentHQ and
-  authenticates to Endor Labs via GitHub Actions OIDC (keyless). Requires the
-  setup in [`ENDOR_GITHUB_KEYLESS_AUTH.md`](ENDOR_GITHUB_KEYLESS_AUTH.md).
-
-| Plugin | Purpose |
-|--------|---------|
-| [`dependency-decision-helper`](dependency-decision-helper) | Decide whether a specific package version is safe to add or upgrade. Returns a verdict with evidence, conditions, and alternatives. |
-| [`package-risk-summary`](package-risk-summary) | Produce a concise risk summary for a package, including known CVEs, malware signals, and maintenance health. |
-| [`upgrade-impact-analysis`](upgrade-impact-analysis) | Analyze the impact of upgrading a dependency — fixes, breaking changes, and the safest target version. |
-| [`vulnerability-explainer`](vulnerability-explainer) | Explain a CVE or Endor finding with severity, exploitability, affected versions, and remediation. |
-| [`tenant-findings`](tenant-findings) | Query findings already imported into an Endor Labs tenant, including reachable findings for a project. *(Enterprise edition only.)* |
-
-## Install
-
-From any plugin edition directory:
-
-```bash
-copilot plugin install .
-```
-
-Uninstall with `copilot plugin uninstall <plugin-name>` (each edition's
-`README.md` lists its plugin name).
-
-## Authentication
-
-- **Developer editions** read your local `~/.endorctl/config.yaml`.
-- **Enterprise editions** rely on Endor Labs GitHub Actions OIDC. Set up the
-  auth policy, environment variables, and `copilot-setup-steps.yml` workflow
-  described in [`ENDOR_GITHUB_KEYLESS_AUTH.md`](ENDOR_GITHUB_KEYLESS_AUTH.md)
-  before running an enterprise plugin in a cloud agent.
-
-## Repository Layout
-
-```
+```text
 github-copilot-plugin/
-├── ENDOR_GITHUB_KEYLESS_AUTH.md     # OIDC setup for cloud agents
-├── dependency-decision-helper/
-│   ├── developer-edition/
-│   └── enterprise-edition/
-├── package-risk-summary/
-│   ├── developer-edition/
-│   └── enterprise-edition/
-├── tenant-findings/
-│   └── enterprise-edition/
-├── upgrade-impact-analysis/
-│   ├── developer-edition/
-│   └── enterprise-edition/
-└── vulnerability-explainer/
-    ├── developer-edition/
-    └── enterprise-edition/
+|-- plugin.json
+|-- agents/
+|   |-- main.agent.md
+|   |-- dependency-decision-helper.agent.md
+|   |-- package-risk-summary.agent.md
+|   |-- upgrade-impact-analysis.agent.md
+|   |-- vulnerability-explainer.agent.md
+|   `-- tenant-findings.agent.md
+`-- docs/
 ```
 
-Each edition contains a `plugin.json` manifest, an `agents/` directory with the
-custom Copilot agent, and its own `README.md` with usage examples.
+For AgentHQ:
+
+1. Create or update the GitHub App.
+2. Enable Agent features.
+3. Select this public repository.
+4. Pin the SHA that contains the root `plugin.json`.
+
+`agents/main.agent.md` is the app entry point. The other agents are packaged as
+specialized workflows that can be selected or used by the platform when the
+request matches their domain.
+
+## Agents
+
+| Agent | Purpose |
+|-------|---------|
+| `Endor Labs Security` | Root entry point and router for Endor security workflows. |
+| `Dependency Decision Helper` | Decides whether a specific package version should be used. |
+| `Endor Labs Package Risk Summary` | Summarizes risk for a specific package version. |
+| `Endor Labs Upgrade Impact Analysis` | Evaluates upgrade risk, fixed findings, VersionUpgrade evidence, and CIA context. |
+| `Endor Labs Vulnerability Explainer` | Explains a CVE, GHSA, or Endor vulnerability with evidence and remediation context. |
+| `Endor Labs Tenant Findings` | Queries existing findings inside an Endor tenant. |
+
+## Authentication Status
+
+The current root plugin still uses the existing Endor GitHub Actions keyless
+environment variables in its stdio MCP server config. That is the previous auth
+path and is not the native AgentHQ MCP OIDC flow from the May 2026 docs.
+
+Native AgentHQ MCP OIDC is not wired in yet. The next structural/auth step is to
+replace the legacy env-only MCP auth with an `oidc:` block that injects
+`$GITHUB_COPILOT_OIDC_MCP_TOKEN`, backed by an Endor-compatible token exchange
+endpoint.
+
+The legacy GitHub Actions OIDC notes are retained in
+[`docs/ENDOR_GITHUB_KEYLESS_AUTH.md`](docs/ENDOR_GITHUB_KEYLESS_AUTH.md) for
+comparison while the native MCP OIDC path is implemented.

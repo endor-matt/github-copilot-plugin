@@ -4,14 +4,16 @@
     "name": "Endor Labs"
   },
   "category": "security",
-  "description": "Endor Labs Package Risk Summary Enterprise Edition plugin for GitHub Copilot and AgentHQ.",
+  "description": "Endor Labs security intelligence agents for GitHub Copilot and AgentHQ.",
   "keywords": [
     "endor-labs",
     "security",
     "dependencies",
+    "vulnerabilities",
     "github-copilot",
     "agenthq"
   ],
-  "name": "endor-labs-package-risk-summary-enterprise",
+  "license": "MIT",
+  "name": "endor-labs-security-intelligence",
   "version": "1.0.0"
 }
