@@ -17,11 +17,15 @@ Authentication is intentionally not configured in this first version. The plugin
 ├── plugin.json
 ├── agents/
 │   └── main.agent.md
+├── skills/
+│   └── main/
+│       └── SKILL.md
 └── README.md
 ```
 
 - `plugin.json` declares the installable plugin package.
 - `agents/main.agent.md` is the main AgentHQ agent and includes the local stdio MCP server configuration.
+- `skills/main/SKILL.md` provides a compatibility skill for AgentHQ environments that activate a `main` skill.
 
 ## Agent Capabilities
 
