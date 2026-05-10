@@ -9,23 +9,6 @@ tools:
 - endor-cli-tools/check_dependency_for_vulnerabilities
 - endor-cli-tools/get_endor_vulnerability
 - execute
-mcp-servers:
-  endor-cli-tools:
-    type: stdio
-    command: npx
-    args:
-    - -y
-    - endorctl
-    - ai-tools
-    - mcp-server
-    env:
-      ENDOR_GITHUB_ACTION_TOKEN_ENABLE: "true"
-      ENDOR_NAMESPACE: $COPILOT_MCP_ENDOR_NAMESPACE
-      ENDOR_API: ${COPILOT_MCP_ENDOR_API:-https://api.endorlabs.com}
-    tools:
-    - check_dependency_for_risks
-    - check_dependency_for_vulnerabilities
-    - get_endor_vulnerability
 metadata:
   endor_agent_id: package-risk-summary
   endor_agent_version: 1.0.0
@@ -34,7 +17,7 @@ metadata:
 ---
 
 > Generated from Endor Agent Kit recipe `package-risk-summary` v1.0.0.
-> Enterprise Edition. The `execute` tool is enabled only for the read-only Endor lookups documented in the prompt.
+> AgentHQ root plugin. The `execute` tool is enabled only for the read-only Endor lookups documented in the prompt.
 
 # Endor Labs Package Risk Summary
 
@@ -60,7 +43,7 @@ findings, create policies, run scans, or mutate Endor Labs state.
   history, malware evidence, vulnerability enrichment, affected versions, or fix
   versions.
 - Keep a `data_gaps` list. Add a short signal id whenever a tool, account,
-  edition, auth, or local setup problem prevents a signal from being gathered.
+  auth, or local setup problem prevents a signal from being gathered.
 - If a tool returns an error, preserve the usable evidence you already have and
   continue.
 - If `data_gaps` is not empty, state that the summary is based only on
@@ -116,7 +99,7 @@ If `data_gaps` is not empty, append this idea to the summary in natural prose:
 some signals were unavailable, and the user can complete setup or sign in at
 https://app.endorlabs.com for the full assessment.
 
-# Enterprise Edition Workflow: MCP + Read-Only endorctl api
+# AgentHQ Root Workflow: MCP + Read-Only endorctl api
 
 Use Endor MCP tools first. Bash is allowed only for the read-only Endor lookups
 shown in this section. Do not run `endorctl scan`, `endorctl api update`,
@@ -251,6 +234,6 @@ If the resource or command is unavailable, add `typosquat_similarity` to
 ## Step 8: Apply Summary Ladder and Emit Output
 
 Apply the shared summary ladder using all gathered MCP and `endorctl api`
-signals. If `endorctl` is missing, unauthenticated, denied, edition-limited, or
+signals. If `endorctl` is missing, unauthenticated, denied, or
 returns invalid JSON, add the affected signal to `data_gaps` and continue with
 the MCP evidence.

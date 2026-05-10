@@ -19,10 +19,13 @@ mcp-servers:
     - endorctl
     - ai-tools
     - mcp-server
+    - --log-level
+    - error
     env:
       ENDOR_GITHUB_ACTION_TOKEN_ENABLE: "true"
       ENDOR_NAMESPACE: $COPILOT_MCP_ENDOR_NAMESPACE
-      ENDOR_API: ${COPILOT_MCP_ENDOR_API:-https://api.endorlabs.com}
+      ENDOR_API: https://api.endorlabs.com
+      ENDOR_LOG_LEVEL: error
     tools:
     - check_dependency_for_risks
     - check_dependency_for_vulnerabilities
