@@ -17,6 +17,10 @@ mcp-servers:
       - endorctl
       - ai-tools
       - mcp-server
+    env:
+      ENDOR_API_CREDENTIALS_KEY: ${{ secrets.COPILOT_MCP_ENDOR_API_CREDENTIALS_KEY }}
+      ENDOR_API_CREDENTIALS_SECRET: ${{ secrets.COPILOT_MCP_ENDOR_API_CREDENTIALS_SECRET }}
+      ENDOR_NAMESPACE: ${{ vars.COPILOT_MCP_ENDOR_NAMESPACE }}
     tools:
       - check_dependency_for_vulnerabilities
       - check_dependency_for_risks

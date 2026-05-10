@@ -39,6 +39,39 @@ The `endor-cli-tools` MCP server enables:
 
 The Enterprise-only `security_review` tool is deliberately not enabled.
 
+## Endor Labs Authentication
+
+The plugin uses the Endor Labs Developer Edition MCP server through `npx`, but the GitHub runner is still headless. Configure Endor Labs API credentials as Copilot Agents secrets/variables so `endorctl` does not try an interactive browser login callback.
+
+Create these in the repository or organization Copilot Agents settings:
+
+```text
+Settings -> Secrets and variables -> Agents
+```
+
+Secrets:
+
+```text
+COPILOT_MCP_ENDOR_API_CREDENTIALS_KEY
+COPILOT_MCP_ENDOR_API_CREDENTIALS_SECRET
+```
+
+Variable:
+
+```text
+COPILOT_MCP_ENDOR_NAMESPACE
+```
+
+The agent maps those values into the MCP server as:
+
+```text
+ENDOR_API_CREDENTIALS_KEY
+ENDOR_API_CREDENTIALS_SECRET
+ENDOR_NAMESPACE
+```
+
+Do not use normal GitHub Actions secrets for this. Copilot cloud agent reads Agents secrets/variables, and values used by MCP servers must use the `COPILOT_MCP_` prefix.
+
 ## Copilot Cloud Agent MCP Configuration
 
 The agent frontmatter already includes the MCP server configuration. For AgentHQ plugin testing, leave repository-level Copilot Cloud agent MCP configuration empty unless you are intentionally testing the MCP server outside this plugin.
@@ -56,7 +89,7 @@ Do not add this JSON as an Agents variable or secret. GitHub does not allow vari
 Use the same server name as the agent frontmatter:
 
 ```json
-{"mcpServers":{"endor-cli-tools":{"type":"local","command":"npx","args":["-y","endorctl","ai-tools","mcp-server"],"tools":["check_dependency_for_vulnerabilities","check_dependency_for_risks","get_endor_vulnerability","get_resource","scan"]}}}
+{"mcpServers":{"endor-cli-tools":{"type":"local","command":"npx","args":["-y","endorctl","ai-tools","mcp-server"],"env":{"ENDOR_API_CREDENTIALS_KEY":"${{ secrets.COPILOT_MCP_ENDOR_API_CREDENTIALS_KEY }}","ENDOR_API_CREDENTIALS_SECRET":"${{ secrets.COPILOT_MCP_ENDOR_API_CREDENTIALS_SECRET }}","ENDOR_NAMESPACE":"${{ vars.COPILOT_MCP_ENDOR_NAMESPACE }}"},"tools":["check_dependency_for_vulnerabilities","check_dependency_for_risks","get_endor_vulnerability","get_resource","scan"]}}}
 ```
 
 The `endor-cli-tools` name matters because the agent enables MCP tools with `endor-cli-tools/*`.
