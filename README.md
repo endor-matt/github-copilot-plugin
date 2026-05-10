@@ -5,8 +5,8 @@ The Agentic App should point at this repository root and load the root
 `plugin.json`.
 
 The plugin bundles Endor Labs read-only security workflows for dependency
-decisions, package risk summaries, upgrade impact analysis, vulnerability
-explanations, and tenant findings.
+decisions, package risk summaries, upgrade impact analysis, and vulnerability
+explanations.
 
 ## Agentic App Entry Point
 
@@ -20,8 +20,7 @@ github-copilot-plugin/
 |   |-- dependency-decision-helper.agent.md
 |   |-- package-risk-summary.agent.md
 |   |-- upgrade-impact-analysis.agent.md
-|   |-- vulnerability-explainer.agent.md
-|   `-- tenant-findings.agent.md
+|   `-- vulnerability-explainer.agent.md
 `-- docs/
 ```
 
@@ -45,18 +44,17 @@ request matches their domain.
 | `Endor Labs Package Risk Summary` | Summarizes risk for a specific package version. |
 | `Endor Labs Upgrade Impact Analysis` | Evaluates upgrade risk, fixed findings, VersionUpgrade evidence, and CIA context. |
 | `Endor Labs Vulnerability Explainer` | Explains a CVE, GHSA, or Endor vulnerability with evidence and remediation context. |
-| `Endor Labs Tenant Findings` | Queries existing findings inside an Endor tenant. |
 
 ## Authentication Status
 
-The current root plugin still uses the existing Endor GitHub Actions keyless
-environment variables in its stdio MCP server config. That is the previous auth
-path and is not the native AgentHQ MCP OIDC flow from the May 2026 docs.
+The active agents currently match the upstream Developer Edition MCP startup
+pattern from `endorlabs/endor-labs-agent-kit`: each specialized agent starts
+`npx -y endorctl ai-tools mcp-server` with no GitHub Actions keyless env vars,
+no `execute` tool, and no AgentHQ `oidc:` block.
 
-Native AgentHQ MCP OIDC is not wired in yet. The next structural/auth step is to
-replace the legacy env-only MCP auth with an `oidc:` block that injects
-`$GITHUB_COPILOT_OIDC_MCP_TOKEN`, backed by an Endor-compatible token exchange
-endpoint.
+Native AgentHQ MCP OIDC is not wired in yet. The next auth step is to add an
+`oidc:` block that injects `$GITHUB_COPILOT_OIDC_MCP_TOKEN`, backed by an
+Endor-compatible token exchange endpoint.
 
 The legacy GitHub Actions OIDC notes are retained in
 [`docs/ENDOR_GITHUB_KEYLESS_AUTH.md`](docs/ENDOR_GITHUB_KEYLESS_AUTH.md) for
