@@ -1,7 +1,7 @@
 {
   "name": "endor-labs-developer",
   "description": "GitHub AgentHQ plugin for Endor Labs Developer Edition security analysis through the Endor Labs MCP server.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "author": {
     "name": "Endor Labs"
   },

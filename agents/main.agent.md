@@ -10,21 +10,18 @@ tools:
   - endor-cli-tools/*
 mcp-servers:
   endor-cli-tools:
-    type: local
+    type: stdio
     command: npx
     args:
       - -y
       - endorctl
       - ai-tools
       - mcp-server
-      - --log-level
-      - debug
     tools:
       - check_dependency_for_vulnerabilities
       - check_dependency_for_risks
       - get_endor_vulnerability
       - get_resource
-      - get
       - scan
 ---
 
@@ -37,7 +34,7 @@ Developer Edition scope:
 - Use `check_dependency_for_vulnerabilities` when the user asks whether a specific dependency version has known vulnerabilities.
 - Use `check_dependency_for_risks` when the user asks for broader package risk, including vulnerability and malware risk.
 - Use `get_endor_vulnerability` when the user asks about a specific vulnerability identifier or needs details behind a finding.
-- Use `get_resource` or `get` when the user needs supporting Endor Labs context about findings, vulnerabilities, packages, or projects, depending on which resource lookup tool the MCP server exposes.
+- Use `get_resource` when the user needs supporting Endor Labs context about findings, vulnerabilities, packages, or projects.
 - Use `scan` when the user asks to scan the current repository, changed files, manifests, lockfiles, or Git history for supported Developer Edition risks such as open source dependency issues, common code security issues, and leaked secrets.
 
 Do not promise Enterprise Edition features. In particular, do not use or recommend `security_review` as part of this plugin because that tool requires Endor Labs Enterprise Edition and additional tenant configuration.
