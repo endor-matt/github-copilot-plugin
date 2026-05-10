@@ -21,7 +21,6 @@ github-copilot-plugin/
 |   |-- package-risk-summary.agent.md
 |   |-- upgrade-impact-analysis.agent.md
 |   `-- vulnerability-explainer.agent.md
-`-- docs/
 ```
 
 For AgentHQ:
@@ -45,17 +44,15 @@ request matches their domain.
 | `Endor Labs Upgrade Impact Analysis` | Evaluates upgrade risk, fixed findings, VersionUpgrade evidence, and CIA context. |
 | `Endor Labs Vulnerability Explainer` | Explains a CVE, GHSA, or Endor vulnerability with evidence and remediation context. |
 
-## Authentication Status
+## Developer Free Mode
 
-The active agents currently match the upstream Developer Edition MCP startup
-pattern from `endorlabs/endor-labs-agent-kit`: each specialized agent starts
-`npx -y endorctl ai-tools mcp-server` with no GitHub Actions keyless env vars,
-no `execute` tool, and no AgentHQ `oidc:` block.
+The active agents use the upstream Developer Edition MCP startup pattern from
+`endorlabs/endor-labs-agent-kit`: each specialized agent starts
+`npx -y endorctl ai-tools mcp-server`, with no `execute` tool and no AgentHQ
+`oidc:` block.
 
-Native AgentHQ MCP OIDC is not wired in yet. The next auth step is to add an
-`oidc:` block that injects `$GITHUB_COPILOT_OIDC_MCP_TOKEN`, backed by an
-Endor-compatible token exchange endpoint.
+No Endor API keys, Endor CLI config, GitHub Actions keyless auth, or AgentHQ OIDC
+configuration is required for the active free/developer workflows.
 
-The legacy GitHub Actions OIDC notes are retained in
-[`docs/ENDOR_GITHUB_KEYLESS_AUTH.md`](docs/ENDOR_GITHUB_KEYLESS_AUTH.md) for
-comparison while the native MCP OIDC path is implemented.
+Tenant-specific workflows are intentionally not active in this plugin right now
+because those require authenticated Endor tenant access.
