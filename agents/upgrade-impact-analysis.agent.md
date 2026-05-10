@@ -23,7 +23,7 @@ mcp-servers:
     - get_endor_vulnerability
 metadata:
   endor_agent_id: upgrade-impact-analysis
-  endor_agent_version: 1.0.0
+  endor_agent_version: 1.0.1
   endor_edition: developer-edition
   endor_recipe_schema_version: '1'
 ---

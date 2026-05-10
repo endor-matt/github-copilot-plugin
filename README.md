@@ -30,6 +30,10 @@ For AgentHQ:
 3. Select this public repository.
 4. Pin the SHA that contains the root `plugin.json`.
 
+When changing agent definitions, update the pinned SHA in the Agentic App. The
+plugin version is bumped when we need a visible cache-busting artifact change,
+but the SHA is still the source of truth for what AgentHQ loads.
+
 `agents/main.agent.md` is the app entry point. The other agents are packaged as
 specialized workflows that can be selected or used by the platform when the
 request matches their domain.

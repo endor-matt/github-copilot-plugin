@@ -6,7 +6,7 @@ disable-model-invocation: false
 user-invocable: true
 metadata:
   endor_agent_id: main
-  endor_agent_version: 1.0.0
+  endor_agent_version: 1.0.1
   endor_edition: agenthq-root
   endor_recipe_schema_version: '1'
 ---
