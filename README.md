@@ -5,7 +5,7 @@ This repository contains a GitHub AgentHQ/Copilot plugin that packages a single 
 The agent starts the Endor Labs MCP server with:
 
 ```sh
-npx -y endorctl@1.7.967 ai-tools mcp-server
+npx -y endorctl ai-tools mcp-server
 ```
 
 This plugin uses the no-key Endor Labs Developer Edition MCP flow. It does not configure Endor Labs API credentials, tenant namespaces, or Enterprise authentication. It is scoped to public dependency and vulnerability intelligence tools and excludes repository scan, reachability, tenant-resource, and Enterprise-only tools.
@@ -34,18 +34,6 @@ The `endor-cli-tools` MCP server enables:
 
 The repository `scan`, tenant-resource `get_resource`, and Enterprise-only `security_review` tools are deliberately not enabled. In GitHub AgentHQ's headless runner, those flows can trigger namespace or browser-auth behavior; this plugin stays on the no-key Developer Edition path.
 
-## Endor Labs Authentication
-
-No Endor Labs API key, API secret, tenant namespace, or `COPILOT_MCP_ENDOR_NAMESPACE` value is required for this plugin.
-
-Do not create these Agents secrets or variables for this no-key Developer Edition plugin:
-
-```text
-COPILOT_MCP_ENDOR_API_CREDENTIALS_KEY
-COPILOT_MCP_ENDOR_API_CREDENTIALS_SECRET
-COPILOT_MCP_ENDOR_NAMESPACE
-```
-
 Developer Edition may use browser authentication in local IDEs on first use. This AgentHQ plugin avoids browser-auth and tenant-auth paths by exposing only the no-key dependency and vulnerability tools.
 
 ## Copilot Cloud Agent MCP Configuration
@@ -70,15 +58,7 @@ Use the same server name as the agent frontmatter:
     "endor-cli-tools": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "endorctl@1.7.967", "ai-tools", "mcp-server"],
-      "timeout": 120000,
-      "env": {
-        "NPM_CONFIG_LOGLEVEL": "error",
-        "NPM_CONFIG_AUDIT": "false",
-        "NPM_CONFIG_FUND": "false",
-        "NPM_CONFIG_UPDATE_NOTIFIER": "false",
-        "NO_UPDATE_NOTIFIER": "1"
-      },
+      "args": ["-y", "endorctl", "ai-tools", "mcp-server"],
       "tools": [
         "check_dependency_for_vulnerabilities",
         "check_dependency_for_risks",
@@ -109,9 +89,8 @@ If the timeout happens before MCP initialization, install `endorctl` in the Agen
   "mcpServers": {
     "endor-cli-tools": {
       "type": "stdio",
-      "command": "endorctl",
-      "args": ["ai-tools", "mcp-server"],
-      "timeout": 120000,
+      "command": "npx",
+      "args": ["-y", "endorctl", "ai-tools", "mcp-server"],
       "tools": [
         "check_dependency_for_vulnerabilities",
         "check_dependency_for_risks",
