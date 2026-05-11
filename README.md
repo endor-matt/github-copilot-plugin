@@ -22,7 +22,7 @@ This plugin uses the no-key Endor Labs Developer Edition MCP flow. It does not c
 
 - `plugin.json` declares the installable plugin package.
 - `agents/main.agent.md` is the main AgentHQ agent and includes the local stdio MCP server configuration.
-- The agent only exposes `endor-cli-tools/*`; it does not expose shell, file, edit, search, or GitHub platform tools.
+- The agent only exposes the three Developer Edition dependency and vulnerability tools from `endor-cli-tools`; it does not expose shell, file, edit, search, repository scan, tenant-resource, Enterprise, or GitHub platform tools.
 
 ## Agent Capabilities
 
@@ -65,10 +65,62 @@ Do not add this JSON as an Agents variable or secret. GitHub does not allow vari
 Use the same server name as the agent frontmatter:
 
 ```json
-{"mcpServers":{"endor-cli-tools":{"type":"local","command":"npx","args":["-y","endorctl@1.7.967","ai-tools","mcp-server"],"env":{"NPM_CONFIG_LOGLEVEL":"error","NPM_CONFIG_AUDIT":"false","NPM_CONFIG_FUND":"false","NO_UPDATE_NOTIFIER":"1"},"tools":["check_dependency_for_vulnerabilities","check_dependency_for_risks","get_endor_vulnerability"]}}}
+{
+  "mcpServers": {
+    "endor-cli-tools": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "endorctl@1.7.967", "ai-tools", "mcp-server"],
+      "timeout": 120000,
+      "env": {
+        "NPM_CONFIG_LOGLEVEL": "error",
+        "NPM_CONFIG_AUDIT": "false",
+        "NPM_CONFIG_FUND": "false",
+        "NPM_CONFIG_UPDATE_NOTIFIER": "false",
+        "NO_UPDATE_NOTIFIER": "1"
+      },
+      "tools": [
+        "check_dependency_for_vulnerabilities",
+        "check_dependency_for_risks",
+        "get_endor_vulnerability"
+      ]
+    }
+  }
+}
 ```
 
-The `endor-cli-tools` name matters because the agent enables MCP tools with `endor-cli-tools/*`.
+The `endor-cli-tools` name matters because the agent enables tools with the `endor-cli-tools/<tool-name>` prefix.
+
+## AgentHQ Debugging
+
+If AgentHQ still times out, enable verbose platform logs in the repository you use for testing:
+
+```text
+Settings -> Secrets and variables -> Agents -> Variables
+COPILOT_AGENT_DEBUG=true
+```
+
+In the next run, inspect verbose logs and `logs.zip` to confirm whether the failure occurs while starting `npx`, listing MCP tools, or invoking a specific Endor Labs tool.
+
+If the timeout happens before MCP initialization, install `endorctl` in the AgentHQ environment and call it directly instead of cold-starting through `npx`:
+
+```json
+{
+  "mcpServers": {
+    "endor-cli-tools": {
+      "type": "stdio",
+      "command": "endorctl",
+      "args": ["ai-tools", "mcp-server"],
+      "timeout": 120000,
+      "tools": [
+        "check_dependency_for_vulnerabilities",
+        "check_dependency_for_risks",
+        "get_endor_vulnerability"
+      ]
+    }
+  }
+}
+```
 
 ## Local Testing
 

@@ -3,20 +3,24 @@ name: Endor Labs Developer
 description: Checks dependency vulnerabilities, open source package risk, and vulnerability details with Endor Labs Developer Edition.
 target: github-copilot
 tools:
-  - endor-cli-tools/*
+  - endor-cli-tools/check_dependency_for_vulnerabilities
+  - endor-cli-tools/check_dependency_for_risks
+  - endor-cli-tools/get_endor_vulnerability
 mcp-servers:
   endor-cli-tools:
-    type: local
+    type: stdio
     command: npx
     args:
       - -y
       - endorctl@1.7.967
       - ai-tools
       - mcp-server
+    timeout: 120000
     env:
       NPM_CONFIG_LOGLEVEL: error
       NPM_CONFIG_AUDIT: "false"
       NPM_CONFIG_FUND: "false"
+      NPM_CONFIG_UPDATE_NOTIFIER: "false"
       NO_UPDATE_NOTIFIER: "1"
     tools:
       - check_dependency_for_vulnerabilities
