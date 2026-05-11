@@ -5,7 +5,7 @@ This repository contains a GitHub AgentHQ/Copilot plugin that packages a single 
 The agent starts the Endor Labs MCP server with:
 
 ```sh
-npx -y endorctl ai-tools mcp-server
+npx -y endorctl@1.7.967 ai-tools mcp-server
 ```
 
 This plugin uses the no-key Endor Labs Developer Edition MCP flow. It does not configure Endor Labs API credentials, tenant namespaces, or Enterprise authentication. It is scoped to public dependency and vulnerability intelligence tools and excludes repository scan, reachability, tenant-resource, and Enterprise-only tools.
@@ -65,7 +65,7 @@ Do not add this JSON as an Agents variable or secret. GitHub does not allow vari
 Use the same server name as the agent frontmatter:
 
 ```json
-{"mcpServers":{"endor-cli-tools":{"type":"local","command":"npx","args":["-y","endorctl","ai-tools","mcp-server"],"tools":["check_dependency_for_vulnerabilities","check_dependency_for_risks","get_endor_vulnerability"]}}}
+{"mcpServers":{"endor-cli-tools":{"type":"local","command":"npx","args":["-y","endorctl@1.7.967","ai-tools","mcp-server"],"env":{"NPM_CONFIG_LOGLEVEL":"error","NPM_CONFIG_AUDIT":"false","NPM_CONFIG_FUND":"false","NO_UPDATE_NOTIFIER":"1"},"tools":["check_dependency_for_vulnerabilities","check_dependency_for_risks","get_endor_vulnerability"]}}}
 ```
 
 The `endor-cli-tools` name matters because the agent enables MCP tools with `endor-cli-tools/*`.

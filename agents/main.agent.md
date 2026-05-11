@@ -6,13 +6,18 @@ tools:
   - endor-cli-tools/*
 mcp-servers:
   endor-cli-tools:
-    type: stdio
+    type: local
     command: npx
     args:
       - -y
-      - endorctl
+      - endorctl@1.7.967
       - ai-tools
       - mcp-server
+    env:
+      NPM_CONFIG_LOGLEVEL: error
+      NPM_CONFIG_AUDIT: "false"
+      NPM_CONFIG_FUND: "false"
+      NO_UPDATE_NOTIFIER: "1"
     tools:
       - check_dependency_for_vulnerabilities
       - check_dependency_for_risks
