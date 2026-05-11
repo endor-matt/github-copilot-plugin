@@ -8,7 +8,7 @@ The agent starts the Endor Labs MCP server with:
 npx -y endorctl ai-tools mcp-server
 ```
 
-Authentication is intentionally not configured in this first version. The plugin is scoped to Endor Labs Developer Edition (free) tools and excludes Enterprise-only `security_review`.
+Authentication is supplied through Copilot Agents secrets/variables and mapped only into the Endor Labs MCP server process. The plugin is scoped to Endor Labs Developer Edition (free) tools and excludes Enterprise-only `security_review`.
 
 ## Contents
 
@@ -22,6 +22,7 @@ Authentication is intentionally not configured in this first version. The plugin
 
 - `plugin.json` declares the installable plugin package.
 - `agents/main.agent.md` is the main AgentHQ agent and includes the local stdio MCP server configuration.
+- The agent only exposes `endor-cli-tools/*`; it does not expose shell, file, edit, search, or GitHub platform tools.
 
 ## Agent Capabilities
 
