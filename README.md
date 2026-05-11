@@ -68,6 +68,8 @@ ENDOR_NAMESPACE
 
 Do not use normal GitHub Actions secrets for this. Copilot cloud agent reads Agents secrets/variables, and values used by MCP servers must use the `COPILOT_MCP_` prefix.
 
+The agent treats `COPILOT_MCP_ENDOR_NAMESPACE` as the only authoritative Endor Labs namespace. It must not infer a namespace from the GitHub repository owner, organization, path, or user account.
+
 ## Copilot Cloud Agent MCP Configuration
 
 The agent frontmatter already includes the MCP server configuration. For AgentHQ plugin testing, leave repository-level Copilot Cloud agent MCP configuration empty unless you are intentionally testing the MCP server outside this plugin.
