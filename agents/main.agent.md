@@ -12,16 +12,9 @@ mcp-servers:
     command: npx
     args:
       - -y
-      - endorctl@1.7.967
+      - endorctl
       - ai-tools
       - mcp-server
-    timeout: 120000
-    env:
-      NPM_CONFIG_LOGLEVEL: error
-      NPM_CONFIG_AUDIT: "false"
-      NPM_CONFIG_FUND: "false"
-      NPM_CONFIG_UPDATE_NOTIFIER: "false"
-      NO_UPDATE_NOTIFIER: "1"
     tools:
       - check_dependency_for_vulnerabilities
       - check_dependency_for_risks
