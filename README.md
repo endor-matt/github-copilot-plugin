@@ -5,8 +5,10 @@ This repository contains a GitHub AgentHQ/Copilot plugin that packages a single 
 The agent starts the Endor Labs MCP server with:
 
 ```sh
-npx -y endorctl ai-tools mcp-server
+endorctl ai-tools mcp-server
 ```
+
+The plugin uses Copilot setup steps to install `endorctl` before AgentHQ starts MCP. This avoids cold-starting `endorctl` through `npx`, which can time out while downloading the Endor Labs binary.
 
 This plugin uses the no-key Endor Labs Developer Edition MCP flow. It does not configure Endor Labs API credentials, tenant namespaces, or Enterprise authentication. It is scoped to public dependency and vulnerability intelligence tools and excludes repository scan, reachability, tenant-resource, and Enterprise-only tools.
 
@@ -14,6 +16,9 @@ This plugin uses the no-key Endor Labs Developer Edition MCP flow. It does not c
 
 ```text
 .
+├── .github/
+│   └── workflows/
+│       └── copilot-setup-steps.yml
 ├── plugin.json
 ├── agents/
 │   └── main.agent.md
@@ -22,6 +27,7 @@ This plugin uses the no-key Endor Labs Developer Edition MCP flow. It does not c
 
 - `plugin.json` declares the installable plugin package.
 - `agents/main.agent.md` is the main AgentHQ agent and includes the local stdio MCP server configuration.
+- `.github/workflows/copilot-setup-steps.yml` installs `endorctl` before Copilot starts the MCP server.
 - The agent only exposes the three Developer Edition dependency and vulnerability tools from `endor-cli-tools`; it does not expose shell, file, edit, search, repository scan, tenant-resource, Enterprise, or GitHub platform tools.
 
 ## Agent Capabilities
@@ -57,8 +63,8 @@ Use the same server name as the agent frontmatter:
   "mcpServers": {
     "endor-cli-tools": {
       "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "endorctl", "ai-tools", "mcp-server"],
+      "command": "endorctl",
+      "args": ["ai-tools", "mcp-server"],
       "tools": [
         "check_dependency_for_vulnerabilities",
         "check_dependency_for_risks",
@@ -80,17 +86,17 @@ Settings -> Secrets and variables -> Agents -> Variables
 COPILOT_AGENT_DEBUG=true
 ```
 
-In the next run, inspect verbose logs and `logs.zip` to confirm whether the failure occurs while starting `npx`, listing MCP tools, or invoking a specific Endor Labs tool.
+In the next run, inspect verbose logs and `logs.zip` to confirm whether the failure occurs while running setup steps, starting `endorctl`, listing MCP tools, or invoking a specific Endor Labs tool.
 
-If the timeout happens before MCP initialization, install `endorctl` in the AgentHQ environment and call it directly instead of cold-starting through `npx`:
+If the timeout happens before MCP initialization, verify that the Copilot setup steps ran and that `endorctl --version` succeeded. If AgentHQ is running in a target repository other than this plugin repository and `endorctl` is missing, copy `.github/workflows/copilot-setup-steps.yml` into that target repository or preinstall `endorctl` in the runner image.
 
 ```json
 {
   "mcpServers": {
     "endor-cli-tools": {
       "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "endorctl", "ai-tools", "mcp-server"],
+      "command": "endorctl",
+      "args": ["ai-tools", "mcp-server"],
       "tools": [
         "check_dependency_for_vulnerabilities",
         "check_dependency_for_risks",
@@ -148,8 +154,8 @@ This repository should contain one plugin for the app identity. Future authentic
 ## Requirements
 
 - GitHub Copilot CLI or AgentHQ environment with plugin support.
-- Node.js with `npx` available. Endor Labs recommends Node.js 24 LTS or later for the cleanest MCP server output.
-- Network access to download and run `endorctl` through `npx`.
+- `endorctl` available on `PATH` before MCP starts. The included Copilot setup steps install it on GitHub's default Ubuntu x64 runner.
+- Network access from setup steps to `api.endorlabs.com` to download the Endor Labs CLI binary.
 
 ## References
 

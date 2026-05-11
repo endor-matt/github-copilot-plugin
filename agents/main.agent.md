@@ -9,10 +9,8 @@ tools:
 mcp-servers:
   endor-cli-tools:
     type: stdio
-    command: npx
+    command: endorctl
     args:
-      - -y
-      - endorctl
       - ai-tools
       - mcp-server
     tools:
