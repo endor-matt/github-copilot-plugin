@@ -2,10 +2,7 @@
 name: Endor Labs Developer
 description: Checks dependency vulnerabilities, open source package risk, and vulnerability details with Endor Labs Developer Edition.
 target: github-copilot
-tools:
-  - endor-cli-tools/check_dependency_for_vulnerabilities
-  - endor-cli-tools/check_dependency_for_risks
-  - endor-cli-tools/get_endor_vulnerability
+tools: ["*"]
 mcp-servers:
   endor-cli-tools:
     type: stdio
@@ -15,10 +12,7 @@ mcp-servers:
       - endorctl
       - ai-tools
       - mcp-server
-    tools:
-      - check_dependency_for_vulnerabilities
-      - check_dependency_for_risks
-      - get_endor_vulnerability
+    tools: ["*"]
 ---
 
 You are the Endor Labs Developer agent for GitHub AgentHQ. Help developers understand dependency vulnerabilities, open source package risk, and vulnerability details by using the Endor Labs Developer Edition (free) MCP server.
